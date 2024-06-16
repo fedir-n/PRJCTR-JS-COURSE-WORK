@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Курсова робота</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- блок 1 -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Визначити проміжок між датами</h2>
+      </div>
+      <div>
+        <label>
+          <input
+            type="date"
+            name="input-date1"
+            id="input-date1"
+            class="input-date"
+          />
+        </label>
+
+        <label>
+          <input
+            type="date"
+            name="input-date2"
+            id="input-date2"
+            class="input-date"
+          />
+        </label>
+
+        <label>
+          <select name="day-types" id="day-types">
+            <option value="all">Всі дні</option>
+            <option value="weekday">Будні дні</option>
+            <option value="holiday">Вихідні дні</option>
+          </select>
+        </label>
+
+        <label>
+          <select name="counter-types" id="counter-types">
+            <option value="day">Порахувати кількість днів</option>
+            <option value="hour">Порахувати кількість годин</option>
+            <option value="min">Порахувати кількість хвилин</option>
+            <option value="sec">Порахувати кількість секунд</option>
+          </select>
+        </label>
+
+        <button type="submit" id="btn-form1" class="btn">Визначити</button>
+      </div>
+      <div class="preset">
+        <button type="button" class="btn-preset7">7 днів</button>
+        <button type="button" class="btn-preset30">30 днів</button>
+      </div>
+
+      <div class="form1-response">DATE RESPONSE</div>
+      <div class="history-table">
+        <table>
+          <tr>
+            <th>Стартова дата</th>
+            <th>Кінцева дата</th>
+            <th>Результат</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- блок 2 -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Отримати список свят</h2>
+      </div>
+
+      <div>
+        <input
+          type="search"
+          placeholder="Вибір країни"
+          id="dropdown-country"
+          class="dropdown-country"
+        />
+        <input
+          type="number"
+          placeholder="Вибір року"
+          min="2001"
+          max="2049"
+          step="1"
+          value="2024"
+          class="input-year"
+        />
+        <button type="submit" id="btn-form2" class="btn">Визначити</button>
+      </div>
+
+      <div class="form2-response">
+        <div class="holidays-table">
+          <table>
+            <tr>
+              <th>Дата</th>
+              <th>Назва свята</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
