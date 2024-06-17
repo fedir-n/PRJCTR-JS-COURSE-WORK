@@ -13,13 +13,19 @@
     />
   </head>
   <body>
+    <div class="tabs">
+      <button id="tab-button1" class="tab-button">Проміжок між датами</button>
+      <button id="tab-button2" class="tab-button">Список свят</button>
+    </div>
+
     <!-- блок 1 -->
-    <div class="block">
+    <div id="tab1" class="block">
       <div class="block-header">
         <h2>Визначити проміжок між датами</h2>
       </div>
       <div>
         <label>
+          Початкова дата:
           <input
             type="date"
             name="input-date1"
@@ -29,6 +35,7 @@
         </label>
 
         <label>
+          Кінцева дата:
           <input
             type="date"
             name="input-date2"
@@ -36,7 +43,10 @@
             class="input-date"
           />
         </label>
-
+        <div class="preset">
+          <button type="button" class="btn-preset7">7 днів</button>
+          <button type="button" class="btn-preset30">30 днів</button>
+        </div>
         <label>
           <select name="day-types" id="day-types">
             <option value="all">Всі дні</option>
@@ -56,10 +66,6 @@
 
         <button type="submit" id="btn-form1" class="btn">Визначити</button>
       </div>
-      <div class="preset">
-        <button type="button" class="btn-preset7">7 днів</button>
-        <button type="button" class="btn-preset30">30 днів</button>
-      </div>
 
       <div class="form1-response">DATE RESPONSE</div>
       <div class="history-table">
@@ -74,7 +80,7 @@
     </div>
 
     <!-- блок 2 -->
-    <div class="block">
+    <div id="tab2" class="block">
       <div class="block-header">
         <h2>Отримати список свят</h2>
       </div>
@@ -86,6 +92,9 @@
           id="dropdown-country"
           class="dropdown-country"
         />
+        <div>
+          <ul class="country-list"></ul>
+        </div>
         <input
           type="number"
           placeholder="Вибір року"
