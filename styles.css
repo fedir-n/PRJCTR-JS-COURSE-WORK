@@ -35,17 +35,17 @@ body {
   margin: 0 10px;
   border-radius: 5px;
 }
+.tab-button:hover,
+.tab-button:focus {
+  background-color: #0056b3;
+}
 
 .tab-button:disabled,
 .tab-button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
-}
-
-.tab-button:hover,
-.tab-button:focus {
-  background-color: #0056b3;
+  /* cursor: not-allowed; */
 }
 
 /* Blocks Styles */
