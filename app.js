@@ -1,9 +1,16 @@
 'use strict';
+Element.prototype.toggleMultiple = function (prop) {
+  for (var i = 0, len = prop.length; i < len; i++) {
+    this.classList.toggle(prop[i]);
+  }
+};
 
 class Page {
   constructor() {
+    //tabs
     this.buttonFirstTab = document.querySelector('#tab-button1');
     this.buttonSecondTab = document.querySelector('#tab-button2');
+    //first tab
     this.firstTab = document.querySelector('#tab1');
     this.secondTab = document.querySelector('#tab2');
     this.firstDateInput = document.querySelector('#input-date1');
@@ -15,48 +22,58 @@ class Page {
     this.submitBtn = document.querySelector('#btn-form1');
     this.responseOutput = document.querySelector('.form1-response');
     this.historyTable = document.querySelector('.history-table table');
+    //second tab
+    //
   }
 }
 
 class TabsBar extends Page {
-  changeTab = function (destTab, currentTab) {
-    this[destTab].removeAttribute('disabled');
-    this[currentTab].setAttribute('disabled', 'true');
-    this.firstTab.classList.toggle('hidden');
-    this.secondTab.classList.toggle('hidden');
+  changeTab = function () {
+    const clButton = ['tab-button-selected', 'tab-button'];
+    const clTab = ['hidden'];
+    const attrButton = ['disabled'];
+    this.buttonFirstTab.toggleMultiple(clButton);
+    this.buttonSecondTab.toggleMultiple(clButton);
+    this.buttonFirstTab.toggleAttribute(attrButton);
+    this.buttonSecondTab.toggleAttribute(attrButton);
+    this.firstTab.toggleMultiple(clTab);
+    this.secondTab.toggleMultiple(clTab);
   };
 }
 
 class FirstTab extends Page {
-  setMinDate = function (date) {
-    this.secondDateInput.setAttribute('min', date);
-  };
-
-  //YOU STOPPED HERE; TRY TO VALIDATE DATE INPUT
-  setMaxDate = function (date) {
-    if (
-      date.getDate().getFullYear() >= 1980 &&
-      date.getDate().getFullYear() <= 2049
-    ) {
-      this.firstDateInput.setAttribute('max', date);
+  setDateAttribut = function (field, attr, selectedDate) {
+    const date = new Date(selectedDate);
+    if (date.getFullYear() >= 1980 && date.getFullYear() <= 2049) {
+      this[field].setAttribute(attr, selectedDate);
+      //TODO: Remove red border
+    } else {
+      this.displayMessage('Введіть дату в проміжку між 1980 та 2049 роком!');
+      //TODO: Add red border
     }
   };
+
   setPeset = function (days) {
     const date = new Date();
     this.secondDateInput.value = date.toLocaleDateString('en-CA');
     date.setDate(date.getDate() - days);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
-  calculateDates = function (startDate, endDate, dayType, counterType) {
-    console.log(startDate);
-    console.log(endDate);
-    console.log(dayType);
-    console.log(counterType);
 
-    if (startDate == 0 || endDate == 0) {
-      this.responseOutput.classList.remove('hidden');
-      this.responseOutput.innerHTML = 'ERROR';
-    }
+  // calculateDates = function (startDate, endDate, dayType, counterType) {
+  //   console.log(startDate);
+  //   console.log(endDate);
+  //   console.log(dayType);
+  //   console.log(counterType);
+
+  //   if (startDate == 0 || endDate == 0) {
+  //     this.displayMessage('DATES ARE EMPTY');
+  //   }
+  // };
+
+  displayMessage = function (text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
   };
 }
 
