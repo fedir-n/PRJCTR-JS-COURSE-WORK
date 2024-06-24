@@ -71,6 +71,7 @@ class FirstTab extends Page {
   //   }
   // };
 
+  //TODO: Make it private
   displayMessage = function (text) {
     this.responseOutput.classList.remove('hidden');
     this.responseOutput.innerHTML = text;

@@ -85,6 +85,7 @@ label {
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 /* Button Styles */
@@ -123,9 +124,7 @@ label {
 }
 
 .btn-preset7:hover,
-.btn-preset30:hover,
-.btn-preset7:focus,
-.btn-preset30:focus {
+.btn-preset30:hover {
   background-color: #138496;
 }
 
