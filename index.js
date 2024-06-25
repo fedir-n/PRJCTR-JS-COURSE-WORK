@@ -16,19 +16,23 @@ tabsBar.buttonSecondTab.addEventListener('click', () => {
 
 //set min value for start date
 firstTab.firstDateInput.addEventListener('focusout', () => {
-  firstTab.setDateAttribut(
-    'secondDateInput',
-    'min',
-    firstTab.firstDateInput.value
-  );
+  if (firstTab.dateFieldValidator(firstTab.firstDateInput.value)) {
+    firstTab.setDateAttribut(
+      'secondDateInput',
+      'min',
+      firstTab.firstDateInput.value
+    );
+  }
 });
 //set max value for end date
 firstTab.secondDateInput.addEventListener('focusout', () => {
-  firstTab.setDateAttribut(
-    'firstDateInput',
-    'max',
-    firstTab.secondDateInput.value
-  );
+  if (firstTab.dateFieldValidator(firstTab.secondDateInput.value)) {
+    firstTab.setDateAttribut(
+      'firstDateInput',
+      'max',
+      firstTab.secondDateInput.value
+    );
+  }
 });
 
 //preset 7 days
@@ -45,6 +49,7 @@ firstTab.presetWeekBtn.addEventListener('click', () => {
     firstTab.secondDateInput.value
   );
 });
+
 //preset 30 days
 firstTab.presetMonthBtn.addEventListener('click', () => {
   firstTab.setPeset(30);
@@ -59,6 +64,7 @@ firstTab.presetMonthBtn.addEventListener('click', () => {
     firstTab.secondDateInput.value
   );
 });
+
 //calculate
 firstTab.submitBtn.addEventListener('click', () => {
   firstTab.calculateDates(
