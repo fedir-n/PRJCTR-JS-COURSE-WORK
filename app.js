@@ -42,15 +42,30 @@ class TabsBar extends Page {
 }
 
 class FirstTab extends Page {
+  #displayMessage = function (text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
+  };
+
+  dateFieldValidator = function (selectedDate) {
+    const date = new Date(selectedDate);
+    if (date.getFullYear() <= 1980 || date.getFullYear() >= 2049) {
+      this.#displayMessage('Введіть дату в проміжку між 1980 та 2049 роком!');
+      //TODO: Remove the field value
+      //TODO: Add red border
+    } else if (selectedDate == 0) {
+      this.#displayMessage('Введіть дату!');
+      //TODO: Remove the field value
+      //TODO: Add red border
+    } else {
+      //TODO: Remove red border if exist
+      return true;
+    }
+  };
+
   setDateAttribut = function (field, attr, selectedDate) {
     const date = new Date(selectedDate);
-    if (date.getFullYear() >= 1980 && date.getFullYear() <= 2049) {
-      this[field].setAttribute(attr, selectedDate);
-      //TODO: Remove red border
-    } else {
-      this.displayMessage('Введіть дату в проміжку між 1980 та 2049 роком!');
-      //TODO: Add red border
-    }
+    this[field].setAttribute(attr, selectedDate);
   };
 
   setPeset = function (days) {
@@ -59,23 +74,7 @@ class FirstTab extends Page {
     date.setDate(date.getDate() - days);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
-
-  // calculateDates = function (startDate, endDate, dayType, counterType) {
-  //   console.log(startDate);
-  //   console.log(endDate);
-  //   console.log(dayType);
-  //   console.log(counterType);
-
-  //   if (startDate == 0 || endDate == 0) {
-  //     this.displayMessage('DATES ARE EMPTY');
-  //   }
-  // };
-
-  //TODO: Make it private
-  displayMessage = function (text) {
-    this.responseOutput.classList.remove('hidden');
-    this.responseOutput.innerHTML = text;
-  };
+  // calculateDates = function (startDate, endDate, dayType, counterType) {};
 }
 
 export { TabsBar, FirstTab };
