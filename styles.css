@@ -27,6 +27,20 @@ body {
 }
 
 .tab-button {
+  background-color: #fafcfd;
+  color: hsl(211, 100%, 50%);
+  border: 1px solid #007bff;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 0 10px;
+  border-radius: 5px;
+}
+
+.tab-button:hover {
+  background-color: #dfefff;
+}
+
+.tab-button-selected {
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -35,16 +49,7 @@ body {
   margin: 0 10px;
   border-radius: 5px;
 }
-
-.tab-button:disabled,
-.tab-button[disabled] {
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
-
-.tab-button:hover,
-.tab-button:focus {
+.tab-button-selected:hover {
   background-color: #0056b3;
 }
 
@@ -80,6 +85,7 @@ label {
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 /* Button Styles */
@@ -118,9 +124,7 @@ label {
 }
 
 .btn-preset7:hover,
-.btn-preset30:hover,
-.btn-preset7:focus,
-.btn-preset30:focus {
+.btn-preset30:hover {
   background-color: #138496;
 }
 
@@ -154,3 +158,5 @@ th {
   background-color: #007bff;
   color: white;
 }
+
+/* add red boarder class for Date fields Tab1 */
