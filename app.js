@@ -1,16 +1,26 @@
 'use strict';
-Element.prototype.toggleMultiple = function (prop) {
-  for (var i = 0, len = prop.length; i < len; i++) {
-    this.classList.toggle(prop[i]);
-  }
-};
 
-class Page {
+class TabsBar {
   constructor() {
-    //tabs
     this.buttonFirstTab = document.querySelector('#tab-button1');
     this.buttonSecondTab = document.querySelector('#tab-button2');
-    //first tab
+    this.firstTab = document.querySelector('#tab1');
+    this.secondTab = document.querySelector('#tab2');
+  }
+  changeTab = function () {
+    this.buttonFirstTab.classList.toggle('tab-button-selected');
+    this.buttonFirstTab.classList.toggle('tab-button');
+    this.buttonSecondTab.classList.toggle('tab-button-selected');
+    this.buttonSecondTab.classList.toggle('tab-button');
+    this.buttonFirstTab.toggleAttribute('disabled');
+    this.buttonSecondTab.toggleAttribute('disabled');
+    this.firstTab.classList.toggle('hidden');
+    this.secondTab.classList.toggle('hidden');
+  };
+}
+
+class FirstTab {
+  constructor() {
     this.firstTab = document.querySelector('#tab1');
     this.secondTab = document.querySelector('#tab2');
     this.firstDateInput = document.querySelector('#input-date1');
@@ -22,30 +32,7 @@ class Page {
     this.submitBtn = document.querySelector('#btn-form1');
     this.responseOutput = document.querySelector('.form1-response');
     this.historyTable = document.querySelector('.history-table table');
-    //second tab
-    //
   }
-}
-
-class TabsBar extends Page {
-  changeTab = function () {
-    const clButton = ['tab-button-selected', 'tab-button'];
-    const clTab = ['hidden'];
-    const attrButton = ['disabled'];
-    this.buttonFirstTab.toggleMultiple(clButton);
-    this.buttonSecondTab.toggleMultiple(clButton);
-    this.buttonFirstTab.toggleAttribute(attrButton);
-    this.buttonSecondTab.toggleAttribute(attrButton);
-    this.firstTab.toggleMultiple(clTab);
-    this.secondTab.toggleMultiple(clTab);
-  };
-}
-
-class FirstTab extends Page {
-  #displayMessage = function (text) {
-    this.responseOutput.classList.remove('hidden');
-    this.responseOutput.innerHTML = text;
-  };
 
   dateFieldValidator = function (selectedDate) {
     const date = new Date(selectedDate);
@@ -74,7 +61,15 @@ class FirstTab extends Page {
     date.setDate(date.getDate() - days);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
-  // calculateDates = function (startDate, endDate, dayType, counterType) {};
+  //   calculateDates = function () {
+  //     firstTab.firstDateInput.value,
+  //     firstTab.secondDateInput.value,
+  //     firstTab.dayTypesInput.value,
+  //     firstTab.counterTypesInput.value};
+  #displayMessage = function (text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
+  };
 }
 
 export { TabsBar, FirstTab };
