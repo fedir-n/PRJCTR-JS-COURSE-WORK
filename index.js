@@ -65,7 +65,12 @@ firstTab.presetMonthBtn.addEventListener('click', () => {
   );
 });
 
-//calculate
-// firstTab.submitBtn.addEventListener('click', () => {
-//   firstTab.calculateDates();
-// });
+// calculate
+firstTab.submitBtn.addEventListener('click', () => {
+  if (
+    firstTab.dateFieldValidator(firstTab.secondDateInput.value) &&
+    firstTab.dateFieldValidator(firstTab.firstDateInput.value)
+  ) {
+    firstTab.calculateDates();
+  }
+});

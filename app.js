@@ -61,14 +61,71 @@ class FirstTab {
     date.setDate(date.getDate() - days);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
-  //   calculateDates = function () {
-  //     firstTab.firstDateInput.value,
-  //     firstTab.secondDateInput.value,
-  //     firstTab.dayTypesInput.value,
-  //     firstTab.counterTypesInput.value};
+
+  calculateDates = function () {
+    const startDate = new Date(this.firstDateInput.value);
+    const endDate = new Date(this.secondDateInput.value);
+    const dayType = this.dayTypesInput.value;
+    const counterType = this.counterTypesInput.value;
+    let currentDate = new Date(startDate);
+    let dates = [];
+    let res = null;
+    let unit = null;
+
+    //create dates array
+    if (dayType === 'all') {
+      while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    } else if (dayType === 'weekday') {
+      while (currentDate <= endDate) {
+        if (this.#isWeekday(currentDate)) {
+          dates.push(new Date(currentDate));
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    } else if (dayType === 'holiday') {
+      while (currentDate <= endDate) {
+        if (!this.#isWeekday(currentDate)) {
+          dates.push(new Date(currentDate));
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    }
+    //TODO: Add singular forms for units
+    if (counterType === 'day') {
+      res = dates.length;
+      unit = 'днів';
+    } else if (counterType === 'hour') {
+      res = dates.length * 24;
+      unit = 'годин';
+    } else if (counterType === 'min') {
+      res = dates.length * 24 * 60;
+      unit = 'хвилин';
+    } else if (counterType === 'sec') {
+      res = dates.length * 24 * 60 * 60;
+      unit = 'секунд';
+    }
+    this.#displayMessage(`${res} ${unit}`);
+    this.#addTableRow(startDate, endDate, `${res} ${unit}`);
+  };
+
+  #isWeekday = function (date) {
+    return date.getDay() % 6 !== 0;
+  };
+
   #displayMessage = function (text) {
     this.responseOutput.classList.remove('hidden');
     this.responseOutput.innerHTML = text;
+  };
+
+  #addTableRow = function (startDate, endDate, res) {
+    this.historyTable.innerHTML += `<tr>
+            <th>${startDate.toLocaleDateString('en-CA')}</th>
+            <th>${endDate.toLocaleDateString('en-CA')}</th>
+            <th>${res}</th>
+          </tr>`;
   };
 }
 
