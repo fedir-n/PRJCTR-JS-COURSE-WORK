@@ -31,7 +31,7 @@ class FirstTab {
     this.counterTypesInput = document.querySelector('#counter-types');
     this.submitBtn = document.querySelector('#btn-form1');
     this.responseOutput = document.querySelector('.form1-response');
-    this.historyTable = document.querySelector('.history-table table');
+    this.historyTable = document.querySelector('.history-table');
   }
 
   dateFieldValidator = function (selectedDate) {
@@ -58,7 +58,7 @@ class FirstTab {
   setPeset = function (days) {
     const date = new Date();
     this.secondDateInput.value = date.toLocaleDateString('en-CA');
-    date.setDate(date.getDate() - days);
+    date.setDate(date.getDate() - days + 1);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
 
@@ -108,7 +108,24 @@ class FirstTab {
       unit = 'секунд';
     }
     this.#displayMessage(`${res} ${unit}`);
-    this.#addTableRow(startDate, endDate, `${res} ${unit}`);
+    this.#addTableRow(
+      startDate.toLocaleDateString('en-CA'),
+      endDate.toLocaleDateString('en-CA'),
+      `${res} ${unit}`
+    );
+    this.#addToLocalStorage(
+      startDate.toLocaleDateString('en-CA'),
+      endDate.toLocaleDateString('en-CA'),
+      `${res} ${unit}`
+    );
+  };
+
+  getFromLocalStorage = function () {
+    const data = localStorage.getItem('tableData');
+    const dates = data !== null ? JSON.parse(data) : [];
+    dates.forEach((date) => {
+      this.#addTableRow(date.startDate, date.endDate, date.result);
+    });
   };
 
   #isWeekday = function (date) {
@@ -121,11 +138,23 @@ class FirstTab {
   };
 
   #addTableRow = function (startDate, endDate, res) {
+    this.historyTable.classList.remove('hidden');
     this.historyTable.innerHTML += `<tr>
-            <th>${startDate.toLocaleDateString('en-CA')}</th>
-            <th>${endDate.toLocaleDateString('en-CA')}</th>
-            <th>${res}</th>
+            <td>${startDate}</td>
+            <td>${endDate}</td>
+            <td>${res}</td>
           </tr>`;
+  };
+
+  #addToLocalStorage = function (startDate, endDate, res) {
+    const data = localStorage.getItem('tableData');
+    const dates = data !== null ? JSON.parse(data) : [];
+    dates.push({
+      startDate: startDate,
+      endDate: endDate,
+      result: res,
+    });
+    localStorage.setItem('tableData', JSON.stringify(dates));
   };
 }
 

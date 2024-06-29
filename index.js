@@ -6,6 +6,8 @@ import { TabsBar } from './app.js';
 const firstTab = new FirstTab();
 const tabsBar = new TabsBar();
 
+firstTab.getFromLocalStorage();
+
 //tabs switch
 tabsBar.buttonFirstTab.addEventListener('click', () => {
   tabsBar.changeTab();
