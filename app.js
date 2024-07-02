@@ -79,6 +79,7 @@ class FirstTab {
           dates.push(new Date(currentDate));
           currentDate.setDate(currentDate.getDate() + 1);
         }
+        break;
       case 'weekday':
         while (currentDate <= endDate) {
           if (this.#isWeekday(currentDate)) {
@@ -86,6 +87,7 @@ class FirstTab {
           }
           currentDate.setDate(currentDate.getDate() + 1);
         }
+        break;
       case 'holiday':
         while (currentDate <= endDate) {
           if (!this.#isWeekday(currentDate)) {
@@ -93,6 +95,7 @@ class FirstTab {
           }
           currentDate.setDate(currentDate.getDate() + 1);
         }
+        break;
     }
     // TODO: Add singular forms for units
     //counter type selection
