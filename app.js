@@ -73,40 +73,50 @@ class FirstTab {
     let unit = null;
 
     //create dates array
-    if (dayType === 'all') {
-      while (currentDate <= endDate) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-    } else if (dayType === 'weekday') {
-      while (currentDate <= endDate) {
-        if (this.#isWeekday(currentDate)) {
+    switch (dayType) {
+      case 'all':
+        while (currentDate <= endDate) {
           dates.push(new Date(currentDate));
+          currentDate.setDate(currentDate.getDate() + 1);
         }
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-    } else if (dayType === 'holiday') {
-      while (currentDate <= endDate) {
-        if (!this.#isWeekday(currentDate)) {
-          dates.push(new Date(currentDate));
+      case 'weekday':
+        while (currentDate <= endDate) {
+          if (this.#isWeekday(currentDate)) {
+            dates.push(new Date(currentDate));
+          }
+          currentDate.setDate(currentDate.getDate() + 1);
         }
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
+      case 'holiday':
+        while (currentDate <= endDate) {
+          if (!this.#isWeekday(currentDate)) {
+            dates.push(new Date(currentDate));
+          }
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
     }
-    //TODO: Add singular forms for units
-    if (counterType === 'day') {
-      res = dates.length;
-      unit = 'днів';
-    } else if (counterType === 'hour') {
-      res = dates.length * 24;
-      unit = 'годин';
-    } else if (counterType === 'min') {
-      res = dates.length * 24 * 60;
-      unit = 'хвилин';
-    } else if (counterType === 'sec') {
-      res = dates.length * 24 * 60 * 60;
-      unit = 'секунд';
+    // TODO: Add singular forms for units
+    //counter type selection
+    switch (counterType) {
+      case 'day':
+        res = dates.length;
+        unit = 'днів';
+        break;
+      case 'hour':
+        res = dates.length * 24;
+        unit = 'годин';
+        break;
+      case 'min':
+        res = dates.length * 24 * 60;
+        unit = 'хвилин';
+        break;
+      case 'sec':
+        res = dates.length * 24 * 60 * 60;
+        unit = 'секунд';
+        break;
+      default:
+        this.#displayMessage('Не обрана одиниця виміру!');
     }
+
     this.#displayMessage(`${res} ${unit}`);
     this.#addTableRow(
       startDate.toLocaleDateString('en-CA'),
