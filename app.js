@@ -31,7 +31,7 @@ class FirstTab {
     this.counterTypesInput = document.querySelector('#counter-types');
     this.submitBtn = document.querySelector('#btn-form1');
     this.responseOutput = document.querySelector('.form1-response');
-    this.historyTable = document.querySelector('.history-table table');
+    this.historyTable = document.querySelector('.history-table');
   }
 
   dateFieldValidator = function (selectedDate) {
@@ -58,17 +58,116 @@ class FirstTab {
   setPeset = function (days) {
     const date = new Date();
     this.secondDateInput.value = date.toLocaleDateString('en-CA');
-    date.setDate(date.getDate() - days);
+    date.setDate(date.getDate() - days + 1);
     this.firstDateInput.value = date.toLocaleDateString('en-CA');
   };
-  //   calculateDates = function () {
-  //     firstTab.firstDateInput.value,
-  //     firstTab.secondDateInput.value,
-  //     firstTab.dayTypesInput.value,
-  //     firstTab.counterTypesInput.value};
+
+  calculateDates = function () {
+    const startDate = new Date(this.firstDateInput.value);
+    const endDate = new Date(this.secondDateInput.value);
+    const dayType = this.dayTypesInput.value;
+    const counterType = this.counterTypesInput.value;
+    let currentDate = new Date(startDate);
+    let dates = [];
+    let res = null;
+    let unit = null;
+
+    //create dates array
+    switch (dayType) {
+      case 'all':
+        while (currentDate <= endDate) {
+          dates.push(new Date(currentDate));
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+        break;
+      case 'weekday':
+        while (currentDate <= endDate) {
+          if (this.#isWeekday(currentDate)) {
+            dates.push(new Date(currentDate));
+          }
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+        break;
+      case 'holiday':
+        while (currentDate <= endDate) {
+          if (!this.#isWeekday(currentDate)) {
+            dates.push(new Date(currentDate));
+          }
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+        break;
+    }
+    // TODO: Add singular forms for units
+    //counter type selection
+    switch (counterType) {
+      case 'day':
+        res = dates.length;
+        unit = 'днів';
+        break;
+      case 'hour':
+        res = dates.length * 24;
+        unit = 'годин';
+        break;
+      case 'min':
+        res = dates.length * 24 * 60;
+        unit = 'хвилин';
+        break;
+      case 'sec':
+        res = dates.length * 24 * 60 * 60;
+        unit = 'секунд';
+        break;
+      default:
+        this.#displayMessage('Не обрана одиниця виміру!');
+    }
+
+    this.#displayMessage(`${res} ${unit}`);
+    this.#addTableRow(
+      startDate.toLocaleDateString('en-CA'),
+      endDate.toLocaleDateString('en-CA'),
+      `${res} ${unit}`
+    );
+    this.#addToLocalStorage(
+      startDate.toLocaleDateString('en-CA'),
+      endDate.toLocaleDateString('en-CA'),
+      `${res} ${unit}`
+    );
+  };
+
+  getFromLocalStorage = function () {
+    const data = localStorage.getItem('tableData');
+    const dates = data !== null ? JSON.parse(data) : [];
+    dates.forEach((date) => {
+      this.#addTableRow(date.startDate, date.endDate, date.result);
+    });
+  };
+
+  #isWeekday = function (date) {
+    return date.getDay() % 6 !== 0;
+  };
+
   #displayMessage = function (text) {
     this.responseOutput.classList.remove('hidden');
     this.responseOutput.innerHTML = text;
+  };
+
+  #addTableRow = function (startDate, endDate, res) {
+    this.historyTable.classList.remove('hidden');
+    this.historyTable.innerHTML += `<tr>
+            <td>${startDate}</td>
+            <td>${endDate}</td>
+            <td>${res}</td>
+          </tr>`;
+  };
+
+  #addToLocalStorage = function (startDate, endDate, res) {
+    const data = localStorage.getItem('tableData');
+    const dates = data !== null ? JSON.parse(data) : [];
+    dates.push({
+      startDate: startDate,
+      endDate: endDate,
+      result: res,
+    });
+    localStorage.setItem('tableData', JSON.stringify(dates));
   };
 }
 
