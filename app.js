@@ -184,7 +184,7 @@ class SecondTab {
     this.submitButton = document.querySelector('#btn-form2');
     this.responseOutput = document.querySelector('.form2-response');
     this.historyTable = document.querySelector('.holidays-table');
-    this.#API_KEY = 'EljjlM6vZwfCiboeUaLbxo0XevMODwsx';
+    this.#API_KEY = '';
   }
 
   async getCountries() {
@@ -199,7 +199,10 @@ class SecondTab {
     }
   }
   filterCountries(data, query) {
-    const countries = data.response.countries;
+    console.log('data:', data);
+    const response = data?.response;
+    console.log('response:', response);
+    const countries = response.countries;
     return countries.filter((country) => {
       return country.country_name.toLowerCase().includes(query.toLowerCase());
     });
@@ -209,16 +212,6 @@ class SecondTab {
     this.countriesList.innerHTML = '';
     countries.forEach((country) => {
       this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
-    });
-  }
-
-  #searchSelectedCountry(data) {
-    const selectedCountry = this.countrySearch.value;
-    const countries = data.response.countries;
-    return countries.find((country) => {
-      return (
-        country.country_name.toLowerCase() === selectedCountry.toLowerCase()
-      );
     });
   }
 
@@ -244,7 +237,7 @@ class SecondTab {
         };
       }
     } else {
-      this.#displayMessage('Країна не знайдена! Оберіть країну зі списку.');
+      this.displayMessage('Країна не знайдена! Оберіть країну зі списку.');
     }
   }
 
@@ -253,6 +246,24 @@ class SecondTab {
     const holidaysArr = data !== null ? JSON.parse(data) : [];
     this.#addTableRows(holidaysArr);
   };
+
+  displayMessage(text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
+    setTimeout(() => {
+      this.responseOutput.classList.add('hidden');
+    }, 5000);
+  }
+
+  #searchSelectedCountry(data) {
+    const selectedCountry = this.countrySearch.value;
+    const countries = data.response.countries;
+    return countries.find((country) => {
+      return (
+        country.country_name.toLowerCase() === selectedCountry.toLowerCase()
+      );
+    });
+  }
 
   #addTableRows(holidays) {
     this.historyTable.innerHTML = '<th>Дата</th> <th>Назва свята</th>';
@@ -271,14 +282,6 @@ class SecondTab {
 
   #overrideLocalStorage(holidays) {
     localStorage.setItem('holidaysTableData', JSON.stringify(holidays));
-  }
-
-  #displayMessage(text) {
-    this.responseOutput.classList.remove('hidden');
-    this.responseOutput.innerHTML = text;
-    setTimeout(() => {
-      this.responseOutput.classList.add('hidden');
-    }, 5000);
   }
 }
 

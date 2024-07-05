@@ -96,14 +96,28 @@ firstTab.submitBtn.addEventListener('click', (event) => {
 
 //SECOND TAB
 secondTab.getFromLocalStorage();
-const response = countriesMock;
-// tabsBar.buttonSecondTab.addEventListener('click', () => {
-//   countries = secondTab.getCountries();
-//   console.log(countries);
-// });
-// console.log(countries);
+
+// const jsonCountries = countriesMock;
+let jsonCountries = null;
+document.addEventListener('DOMContentLoaded', () => {
+  secondTab
+    .getCountries()
+    .then((countries) => {
+      jsonCountries = countries;
+      console.log(countries);
+    })
+    .catch((error) => {
+      secondTab.displayMessage(error);
+      throw new Error(error);
+    });
+});
+
 secondTab.countrySearch.addEventListener('keyup', (event) => {
-  const countries = secondTab.filterCountries(response, event.target.value);
+  console.log('search:', jsonCountries);
+  const countries = secondTab.filterCountries(
+    jsonCountries,
+    event.target.value
+  );
   secondTab.addToCountriesList(countries);
   secondTab.countriesList.classList.add('show');
 });
@@ -124,9 +138,9 @@ secondTab.countriesList.addEventListener('click', (event) => {
   secondTab.countrySearch.value = event.target.textContent;
 });
 
-secondTab.yearInput.addEventListener('wheel', () => {});
-
 secondTab.submitButton.addEventListener('click', (event) => {
   event.preventDefault();
-  secondTab.getHolidays(response);
+  secondTab.getHolidays(jsonCountries);
 });
+
+secondTab.yearInput.addEventListener('wheel', () => {});
