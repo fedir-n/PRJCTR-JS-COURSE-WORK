@@ -1,20 +1,23 @@
 'use strict';
 
-import { FirstTab } from './app.js';
-import { TabsBar } from './app.js';
+import { TabsBar, FirstTab, SecondTab } from './app.js';
+import { countriesMock } from './mockData.js';
 
-const firstTab = new FirstTab();
 const tabsBar = new TabsBar();
+const firstTab = new FirstTab();
+const secondTab = new SecondTab();
 
-firstTab.getFromLocalStorage();
-
-//tabs switch
+//TABS SWITCH
 tabsBar.buttonFirstTab.addEventListener('click', () => {
   tabsBar.changeTab();
 });
 tabsBar.buttonSecondTab.addEventListener('click', () => {
   tabsBar.changeTab();
 });
+
+//FIRST TAB
+
+firstTab.getFromLocalStorage();
 
 //set min value for start date
 firstTab.firstDateInput.addEventListener('focusout', () => {
@@ -68,7 +71,8 @@ firstTab.presetMonthBtn.addEventListener('click', () => {
 });
 
 // calculate
-firstTab.submitBtn.addEventListener('click', () => {
+firstTab.submitBtn.addEventListener('click', (event) => {
+  event.preventDefault();
   if (
     firstTab.dateFieldValidator(firstTab.secondDateInput.value) &&
     firstTab.dateFieldValidator(firstTab.firstDateInput.value)
@@ -76,3 +80,29 @@ firstTab.submitBtn.addEventListener('click', () => {
     firstTab.calculateDates();
   }
 });
+
+//SECOND TAB
+const response = countriesMock;
+// tabsBar.buttonSecondTab.addEventListener('click', () => {
+//   countries = secondTab.getCountries();
+//   console.log(countries);
+// });
+// console.log(countries);
+secondTab.countrySearch.addEventListener('keyup', (event) => {
+  const countries = secondTab.filterCountries(response, event.target.value);
+  secondTab.addToCountriesList(countries);
+  secondTab.countriesList.classList.add('show');
+});
+
+secondTab.countrySearch.addEventListener('blur', (event) => {
+  setTimeout(() => {
+    secondTab.countriesList.classList.remove('show');
+    secondTab.yearInput.removeAttribute('disabled');
+  }, 200);
+});
+
+secondTab.countriesList.addEventListener('click', (event) => {
+  secondTab.countrySearch.value = event.target.textContent;
+});
+
+secondTab.yearInput.addEventListener('wheel', () => {});

@@ -171,4 +171,41 @@ class FirstTab {
   };
 }
 
-export { TabsBar, FirstTab };
+class SecondTab {
+  #API_KEY;
+  constructor() {
+    this.countrySearch = document.querySelector('.dropdown-country');
+    this.countriesList = document.querySelector('.country-list');
+    this.yearInput = document.querySelector('.input-year');
+    this.submitButton = document.querySelector('#btn-form2');
+    this.responseOutput = document.querySelector('.form2-response');
+    this.historyTable = document.querySelector('.holidays-table');
+    this.#API_KEY = 'EljjlM6vZwfCiboeUaLbxo0XevMODwsx';
+  }
+
+  async getCountries() {
+    try {
+      const countries = await fetch(
+        `https://calendarific.com/api/v2/countries?api_key=${this.#API_KEY}`
+      );
+      return countries.json();
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  filterCountries(data, query) {
+    const countries = data.response.countries;
+    return countries.filter((country) => {
+      return country.country_name.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
+  addToCountriesList(countries) {
+    this.countriesList.innerHTML = '';
+    countries.forEach((country) => {
+      this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
+    });
+  }
+}
+
+export { TabsBar, FirstTab, SecondTab };
