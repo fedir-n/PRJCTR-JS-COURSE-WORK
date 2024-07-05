@@ -8,11 +8,24 @@ const firstTab = new FirstTab();
 const secondTab = new SecondTab();
 
 //TABS SWITCH
+const tab =
+  localStorage.getItem('tabNumber') !== null
+    ? localStorage.getItem('tabNumber')
+    : `1`;
+switch (tab) {
+  case '1':
+    break;
+  case '2':
+    tabsBar.changeTab();
+}
+
 tabsBar.buttonFirstTab.addEventListener('click', () => {
   tabsBar.changeTab();
+  tabsBar.addToLocalStorage(1);
 });
 tabsBar.buttonSecondTab.addEventListener('click', () => {
   tabsBar.changeTab();
+  tabsBar.addToLocalStorage(2);
 });
 
 //FIRST TAB
@@ -82,6 +95,7 @@ firstTab.submitBtn.addEventListener('click', (event) => {
 });
 
 //SECOND TAB
+secondTab.getFromLocalStorage();
 const response = countriesMock;
 // tabsBar.buttonSecondTab.addEventListener('click', () => {
 //   countries = secondTab.getCountries();
@@ -97,7 +111,12 @@ secondTab.countrySearch.addEventListener('keyup', (event) => {
 secondTab.countrySearch.addEventListener('blur', (event) => {
   setTimeout(() => {
     secondTab.countriesList.classList.remove('show');
-    secondTab.yearInput.removeAttribute('disabled');
+
+    if (event.target.value.trim()) {
+      secondTab.yearInput.removeAttribute('disabled');
+    } else {
+      secondTab.yearInput.setAttribute('disabled', '');
+    }
   }, 200);
 });
 
@@ -106,3 +125,8 @@ secondTab.countriesList.addEventListener('click', (event) => {
 });
 
 secondTab.yearInput.addEventListener('wheel', () => {});
+
+secondTab.submitButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  secondTab.getHolidays(response);
+});

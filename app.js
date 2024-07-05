@@ -17,6 +17,10 @@ class TabsBar {
     this.firstTab.classList.toggle('hidden');
     this.secondTab.classList.toggle('hidden');
   };
+
+  addToLocalStorage = function (number) {
+    localStorage.setItem('tabNumber', number);
+  };
 }
 
 class FirstTab {
@@ -186,7 +190,8 @@ class SecondTab {
   async getCountries() {
     try {
       const countries = await fetch(
-        `https://calendarific.com/api/v2/countries?api_key=${this.#API_KEY}`
+        `https://calendarific.com/api/v2/countries?api_key=${this.#API_KEY}
+        &language=uk`
       );
       return countries.json();
     } catch (error) {
@@ -205,6 +210,75 @@ class SecondTab {
     countries.forEach((country) => {
       this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
     });
+  }
+
+  #searchSelectedCountry(data) {
+    const selectedCountry = this.countrySearch.value;
+    const countries = data.response.countries;
+    return countries.find((country) => {
+      return (
+        country.country_name.toLowerCase() === selectedCountry.toLowerCase()
+      );
+    });
+  }
+
+  async getHolidays(data) {
+    const country = this.#searchSelectedCountry(data);
+    const iso = country?.['iso-3166'];
+    const year = this.yearInput.value;
+    if (country) {
+      try {
+        const response = await fetch(
+          `https://calendarific.com/api/v2/holidays?
+          api_key=${this.#API_KEY}
+          &country=${iso}
+          &year=${year}
+          &language=uk`
+        );
+        const jsonResponse = await response.json();
+        this.#addTableRows(jsonResponse.response?.holidays);
+        this.#overrideLocalStorage(jsonResponse.response?.holidays);
+      } catch {
+        (error) => {
+          throw new Error(error);
+        };
+      }
+    } else {
+      this.#displayMessage('Країна не знайдена! Оберіть країну зі списку.');
+    }
+  }
+
+  getFromLocalStorage = function () {
+    const data = localStorage.getItem('holidaysTableData');
+    const holidaysArr = data !== null ? JSON.parse(data) : [];
+    this.#addTableRows(holidaysArr);
+  };
+
+  #addTableRows(holidays) {
+    this.historyTable.innerHTML = '<th>Дата</th> <th>Назва свята</th>';
+    holidays.forEach((holiday) => {
+      const year = holiday?.date?.datetime?.year;
+      const month = ('0' + holiday?.date?.datetime?.month).slice(-2);
+      const day = ('0' + holiday?.date?.datetime?.day).slice(-2);
+
+      this.historyTable.classList.remove('hidden');
+      this.historyTable.innerHTML += `<tr>
+              <td>${year}-${month}-${day}</td>
+              <td>${holiday?.name}</td>
+            </tr>`;
+    });
+  }
+
+  #overrideLocalStorage(holidays) {
+    localStorage.setItem('holidaysTableData', JSON.stringify(holidays));
+  }
+
+  #displayMessage(text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
+    setTimeout(() => {
+      this.responseOutput.classList.add('hidden');
+    }, 5000);
   }
 }
 

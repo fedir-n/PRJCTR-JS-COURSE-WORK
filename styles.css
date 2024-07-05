@@ -141,6 +141,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: auto;
 }
 
 table,
@@ -153,6 +154,9 @@ th,
 td {
   padding: 10px;
   text-align: left;
+  white-space: nowrap;
+  max-width: 230px;
+  overflow: hidden;
 }
 
 th {
