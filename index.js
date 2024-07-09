@@ -137,5 +137,17 @@ import { API_KEY } from './API_KEY.js';
     secondTab.getHolidays(jsonCountries);
   });
 
+  secondTab.historyTable.addEventListener('click', (event) => {
+    const element = event.target.querySelector('i');
+
+    if (element.classList.contains('fa-sort')) {
+      secondTab.sortTableByDate('asc');
+    } else if (element.classList.contains('fa-sort-amount-asc')) {
+      secondTab.sortTableByDate('desc');
+    } else if (element.classList.contains('fa-sort-amount-desc')) {
+      secondTab.getFromLocalStorage();
+    }
+  });
+
   secondTab.yearInput.addEventListener('wheel', () => {});
 })();

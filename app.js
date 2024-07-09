@@ -272,6 +272,35 @@ class SecondTab {
     }, 5000);
   }
 
+  sortTableByDate(sort) {
+    const data = localStorage.getItem('holidaysTableData');
+    const holidaysArr = data !== null ? JSON.parse(data) : [];
+    const copiedHolidays = holidaysArr.slice();
+
+    console.log(holidaysArr);
+
+    if (sort === 'desc') {
+      const sortIcon = `<i class="fa fa-sort-amount-desc" aria-hidden="true"></i>`;
+      copiedHolidays.sort(
+        (b, a) => Number(a.date.datetime.day) - Number(b.date.datetime.day)
+      );
+      copiedHolidays.sort(
+        (b, a) => Number(a.date.datetime.month) - Number(b.date.datetime.month)
+      );
+      this.#addTableRows(copiedHolidays, sortIcon);
+    } else if (sort === 'asc') {
+      const sortIcon = `<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>`;
+
+      copiedHolidays.sort(
+        (a, b) => Number(a.date.datetime.day) - Number(b.date.datetime.day)
+      );
+      copiedHolidays.sort(
+        (a, b) => Number(a.date.datetime.month) - Number(b.date.datetime.month)
+      );
+      this.#addTableRows(copiedHolidays, sortIcon);
+    }
+  }
+
   #searchSelectedCountry(data) {
     try {
       if (!data) {
@@ -290,9 +319,12 @@ class SecondTab {
     }
   }
 
-  #addTableRows(holidays) {
+  #addTableRows(
+    holidays,
+    sortIcon = '<i class="fa fa-sort" aria-hidden="true"></i>'
+  ) {
     if (holidays.length !== 0) {
-      this.historyTable.innerHTML = '<th>Дата</th> <th>Назва свята</th>';
+      this.historyTable.innerHTML = `<th>Дата ${sortIcon}</th> <th>Назва свята</th>`;
       holidays.forEach((holiday) => {
         const year = holiday?.date?.datetime?.year;
         const month = ('0' + holiday?.date?.datetime?.month).slice(-2);

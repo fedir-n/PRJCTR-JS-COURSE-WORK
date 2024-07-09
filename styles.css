@@ -162,6 +162,7 @@ td {
 th {
   background-color: #007bff;
   color: white;
+  cursor: pointer;
 }
 
 .country-list {
