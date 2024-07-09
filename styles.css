@@ -129,7 +129,8 @@ label {
 }
 
 /* Response and Table Styles */
-.form1-response {
+.form1-response,
+.form2-response {
   margin-top: 20px;
   padding: 10px;
   background-color: #e9ecef;
@@ -140,6 +141,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: auto;
 }
 
 table,
@@ -152,11 +154,40 @@ th,
 td {
   padding: 10px;
   text-align: left;
+  white-space: nowrap;
+  max-width: 230px;
+  overflow: hidden;
 }
 
 th {
   background-color: #007bff;
   color: white;
+  cursor: pointer;
+}
+
+.country-list {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  max-width: 460px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+  display: none;
+}
+
+.country-list.show {
+  display: block;
+}
+
+.country-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.country-list li:hover {
+  background-color: #f1f1f1;
 }
 
 /* add red boarder class for Date fields Tab1 */

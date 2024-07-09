@@ -17,6 +17,10 @@ class TabsBar {
     this.firstTab.classList.toggle('hidden');
     this.secondTab.classList.toggle('hidden');
   };
+
+  addToLocalStorage = function (number) {
+    localStorage.setItem('tabNumber', number);
+  };
 }
 
 class FirstTab {
@@ -171,4 +175,175 @@ class FirstTab {
   };
 }
 
-export { TabsBar, FirstTab };
+class SecondTab {
+  #API_KEY;
+  constructor(API_KEY) {
+    this.countrySearch = document.querySelector('.dropdown-country');
+    this.countriesList = document.querySelector('.country-list');
+    this.yearInput = document.querySelector('.input-year');
+    this.submitButton = document.querySelector('#btn-form2');
+    this.responseOutput = document.querySelector('.form2-response');
+    this.historyTable = document.querySelector('.holidays-table');
+    this.#API_KEY = API_KEY;
+  }
+
+  async getCountries() {
+    try {
+      const countries = await fetch(
+        `https://calendarific.com/api/v2/countries?api_key=${this.#API_KEY}
+        &language=uk`
+      );
+
+      if (!countries.ok) {
+        throw `Status code: ${countries.status}`;
+      }
+
+      return countries.json();
+    } catch (error) {
+      this.displayMessage(error);
+      throw new Error(error);
+    }
+  }
+  filterCountries(data, query) {
+    const response = data?.response;
+    const countries = response.countries;
+    return countries.filter((country) => {
+      return country.country_name.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
+  addToCountriesList(countries) {
+    if (countries.lenth !== 0) {
+      this.countriesList.innerHTML = '';
+      countries.forEach((country) => {
+        this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
+      });
+    }
+  }
+
+  async getHolidays(data) {
+    const country = this.#searchSelectedCountry(data);
+
+    if (country) {
+      try {
+        const iso = country?.['iso-3166'];
+
+        const year = this.yearInput.value;
+        const response = await fetch(
+          `https://calendarific.com/api/v2/holidays?
+          api_key=${this.#API_KEY}
+          &country=${iso}
+          &year=${year}
+          &language=uk`
+        );
+
+        if (!response.ok) {
+          throw `status code: ${countries.status}`;
+        }
+
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.response.length === 0) {
+          throw 'Інформація не знайдена!';
+        }
+
+        this.#addTableRows(jsonResponse.response?.holidays);
+        this.#overrideLocalStorage(jsonResponse.response?.holidays);
+      } catch (error) {
+        this.displayMessage(error);
+        throw new Error(error);
+      }
+    } else {
+      this.displayMessage('Країна не знайдена! Оберіть країну зі списку.');
+    }
+  }
+
+  getFromLocalStorage = function () {
+    const data = localStorage.getItem('holidaysTableData');
+    const holidaysArr = data !== null ? JSON.parse(data) : [];
+    this.#addTableRows(holidaysArr);
+  };
+
+  displayMessage(text) {
+    this.responseOutput.classList.remove('hidden');
+    this.responseOutput.innerHTML = text;
+    setTimeout(() => {
+      this.responseOutput.classList.add('hidden');
+    }, 5000);
+  }
+
+  sortTableByDate(sort) {
+    const data = localStorage.getItem('holidaysTableData');
+    const holidaysArr = data !== null ? JSON.parse(data) : [];
+    const copiedHolidays = holidaysArr.slice();
+
+    console.log(holidaysArr);
+
+    if (sort === 'desc') {
+      const sortIcon = `<i class="fa fa-sort-amount-desc" aria-hidden="true"></i>`;
+      copiedHolidays.sort(
+        (b, a) => Number(a.date.datetime.day) - Number(b.date.datetime.day)
+      );
+      copiedHolidays.sort(
+        (b, a) => Number(a.date.datetime.month) - Number(b.date.datetime.month)
+      );
+      this.#addTableRows(copiedHolidays, sortIcon);
+    } else if (sort === 'asc') {
+      const sortIcon = `<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>`;
+
+      copiedHolidays.sort(
+        (a, b) => Number(a.date.datetime.day) - Number(b.date.datetime.day)
+      );
+      copiedHolidays.sort(
+        (a, b) => Number(a.date.datetime.month) - Number(b.date.datetime.month)
+      );
+      this.#addTableRows(copiedHolidays, sortIcon);
+    }
+  }
+
+  #searchSelectedCountry(data) {
+    try {
+      if (!data) {
+        throw 'Список країн відсутній!';
+      }
+      const selectedCountry = this.countrySearch.value;
+      const countries = data.response.countries;
+      return countries.find((country) => {
+        return (
+          country.country_name.toLowerCase() === selectedCountry.toLowerCase()
+        );
+      });
+    } catch (error) {
+      this.displayMessage(error);
+      throw new Error(error);
+    }
+  }
+
+  #addTableRows(
+    holidays,
+    sortIcon = '<i class="fa fa-sort" aria-hidden="true"></i>'
+  ) {
+    if (holidays.length !== 0) {
+      this.historyTable.innerHTML = `<th>Дата ${sortIcon}</th> <th>Назва свята</th>`;
+      holidays.forEach((holiday) => {
+        const year = holiday?.date?.datetime?.year;
+        const month = ('0' + holiday?.date?.datetime?.month).slice(-2);
+        const day = ('0' + holiday?.date?.datetime?.day).slice(-2);
+
+        this.historyTable.classList.remove('hidden');
+        this.historyTable.innerHTML += `<tr>
+              <td>${year}-${month}-${day}</td>
+              <td>${holiday?.name}</td>
+            </tr>`;
+      });
+    } else {
+      this.historyTable.classList.add('hidden');
+    }
+  }
+
+  #overrideLocalStorage(holidays) {
+    localStorage.setItem('holidaysTableData', JSON.stringify(holidays));
+  }
+}
+
+export { TabsBar, FirstTab, SecondTab };
