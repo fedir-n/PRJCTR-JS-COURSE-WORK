@@ -177,14 +177,14 @@ class FirstTab {
 
 class SecondTab {
   #API_KEY;
-  constructor() {
+  constructor(API_KEY) {
     this.countrySearch = document.querySelector('.dropdown-country');
     this.countriesList = document.querySelector('.country-list');
     this.yearInput = document.querySelector('.input-year');
     this.submitButton = document.querySelector('#btn-form2');
     this.responseOutput = document.querySelector('.form2-response');
     this.historyTable = document.querySelector('.holidays-table');
-    this.#API_KEY = '';
+    this.#API_KEY = API_KEY;
   }
 
   async getCountries() {
@@ -193,15 +193,21 @@ class SecondTab {
         `https://calendarific.com/api/v2/countries?api_key=${this.#API_KEY}
         &language=uk`
       );
+
+      if (!countries.ok) {
+        throw `Status code: ${countries.status}`;
+      }
+
       return countries.json();
     } catch (error) {
+      this.displayMessage(error);
       throw new Error(error);
     }
   }
   filterCountries(data, query) {
-    console.log('data:', data);
+    // console.log('data:', data);
     const response = data?.response;
-    console.log('response:', response);
+    // console.log('response:', response);
     const countries = response.countries;
     return countries.filter((country) => {
       return country.country_name.toLowerCase().includes(query.toLowerCase());
@@ -217,10 +223,11 @@ class SecondTab {
 
   async getHolidays(data) {
     const country = this.#searchSelectedCountry(data);
-    const iso = country?.['iso-3166'];
-    const year = this.yearInput.value;
+
     if (country) {
       try {
+        const iso = country?.['iso-3166'];
+        const year = this.yearInput.value;
         const response = await fetch(
           `https://calendarific.com/api/v2/holidays?
           api_key=${this.#API_KEY}
@@ -228,13 +235,17 @@ class SecondTab {
           &year=${year}
           &language=uk`
         );
+
+        if (!response.ok) {
+          throw `status code: ${countries.status}`;
+        }
+
         const jsonResponse = await response.json();
         this.#addTableRows(jsonResponse.response?.holidays);
         this.#overrideLocalStorage(jsonResponse.response?.holidays);
-      } catch {
-        (error) => {
-          throw new Error(error);
-        };
+      } catch (error) {
+        this.displayMessage(error);
+        throw new Error(error);
       }
     } else {
       this.displayMessage('Країна не знайдена! Оберіть країну зі списку.');
@@ -256,13 +267,21 @@ class SecondTab {
   }
 
   #searchSelectedCountry(data) {
-    const selectedCountry = this.countrySearch.value;
-    const countries = data.response.countries;
-    return countries.find((country) => {
-      return (
-        country.country_name.toLowerCase() === selectedCountry.toLowerCase()
-      );
-    });
+    try {
+      if (!data) {
+        throw 'Список країн відсутній!';
+      }
+      const selectedCountry = this.countrySearch.value;
+      const countries = data.response.countries;
+      return countries.find((country) => {
+        return (
+          country.country_name.toLowerCase() === selectedCountry.toLowerCase()
+        );
+      });
+    } catch (error) {
+      this.displayMessage(error);
+      throw new Error(error);
+    }
   }
 
   #addTableRows(holidays) {

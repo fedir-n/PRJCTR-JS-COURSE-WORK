@@ -2,10 +2,11 @@
 
 import { TabsBar, FirstTab, SecondTab } from './app.js';
 import { countriesMock } from './mockData.js';
+import { API_KEY } from './API_KEY.js';
 
 const tabsBar = new TabsBar();
 const firstTab = new FirstTab();
-const secondTab = new SecondTab();
+const secondTab = new SecondTab(API_KEY);
 
 //TABS SWITCH
 const tab =
@@ -100,16 +101,9 @@ secondTab.getFromLocalStorage();
 // const jsonCountries = countriesMock;
 let jsonCountries = null;
 document.addEventListener('DOMContentLoaded', () => {
-  secondTab
-    .getCountries()
-    .then((countries) => {
-      jsonCountries = countries;
-      console.log(countries);
-    })
-    .catch((error) => {
-      secondTab.displayMessage(error);
-      throw new Error(error);
-    });
+  secondTab.getCountries().then((countries) => {
+    jsonCountries = countries;
+  });
 });
 
 secondTab.countrySearch.addEventListener('keyup', (event) => {
