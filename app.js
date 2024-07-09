@@ -205,9 +205,7 @@ class SecondTab {
     }
   }
   filterCountries(data, query) {
-    // console.log('data:', data);
     const response = data?.response;
-    // console.log('response:', response);
     const countries = response.countries;
     return countries.filter((country) => {
       return country.country_name.toLowerCase().includes(query.toLowerCase());
@@ -215,10 +213,12 @@ class SecondTab {
   }
 
   addToCountriesList(countries) {
-    this.countriesList.innerHTML = '';
-    countries.forEach((country) => {
-      this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
-    });
+    if (countries.lenth !== 0) {
+      this.countriesList.innerHTML = '';
+      countries.forEach((country) => {
+        this.countriesList.innerHTML += `<li>${country.country_name}</li>`;
+      });
+    }
   }
 
   async getHolidays(data) {
@@ -227,6 +227,7 @@ class SecondTab {
     if (country) {
       try {
         const iso = country?.['iso-3166'];
+
         const year = this.yearInput.value;
         const response = await fetch(
           `https://calendarific.com/api/v2/holidays?
@@ -241,6 +242,11 @@ class SecondTab {
         }
 
         const jsonResponse = await response.json();
+
+        if (jsonResponse.response.length === 0) {
+          throw 'Інформація не знайдена!';
+        }
+
         this.#addTableRows(jsonResponse.response?.holidays);
         this.#overrideLocalStorage(jsonResponse.response?.holidays);
       } catch (error) {
@@ -285,18 +291,22 @@ class SecondTab {
   }
 
   #addTableRows(holidays) {
-    this.historyTable.innerHTML = '<th>Дата</th> <th>Назва свята</th>';
-    holidays.forEach((holiday) => {
-      const year = holiday?.date?.datetime?.year;
-      const month = ('0' + holiday?.date?.datetime?.month).slice(-2);
-      const day = ('0' + holiday?.date?.datetime?.day).slice(-2);
+    if (holidays.length !== 0) {
+      this.historyTable.innerHTML = '<th>Дата</th> <th>Назва свята</th>';
+      holidays.forEach((holiday) => {
+        const year = holiday?.date?.datetime?.year;
+        const month = ('0' + holiday?.date?.datetime?.month).slice(-2);
+        const day = ('0' + holiday?.date?.datetime?.day).slice(-2);
 
-      this.historyTable.classList.remove('hidden');
-      this.historyTable.innerHTML += `<tr>
+        this.historyTable.classList.remove('hidden');
+        this.historyTable.innerHTML += `<tr>
               <td>${year}-${month}-${day}</td>
               <td>${holiday?.name}</td>
             </tr>`;
-    });
+      });
+    } else {
+      this.historyTable.classList.add('hidden');
+    }
   }
 
   #overrideLocalStorage(holidays) {
