@@ -1,7 +1,7 @@
 'use strict';
 
 import { TabsBar, FirstTab, SecondTab } from './app.js';
-import { countriesMock } from './mockData.js';
+// import { countriesMock } from './mockData.js';
 import { API_KEY } from './API_KEY.js';
 
 (() => {
